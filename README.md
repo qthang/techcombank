@@ -15,6 +15,7 @@ sudo iptables -I INPUT -p tcp --dport 6789 -j ACCEPT
 
 9. **Khởi chạy server**
 ```sh
+git clone https://github.com/qthang/techcombank
 cd /tcb2021
 sudo pm2 start node.js
 ```
