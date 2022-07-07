@@ -7,6 +7,7 @@ class MongoDB {
     // mongoose instance connection url connection
     mongoose.Promise = global.Promise;
     mongoose.connect(MONGO_URI, {
+      useFindAndModify: false,
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
