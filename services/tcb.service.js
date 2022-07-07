@@ -53,7 +53,7 @@ const checkTranHistory = async (account, accountNumber, fromTime, toTime, trytim
 
     const body = {
         ...generateAdditionBody(account.deviceId),
-        "maxRecords": "1000",
+        "maxRecords": "1",
         fromDate: begin,
         toDate: end,
         "paymentInstrumentId": paymentInstrumentId || account.instrumentIdNumber
@@ -90,10 +90,10 @@ const checkTranHistory = async (account, accountNumber, fromTime, toTime, trytim
         const adjustTransactions = transList.map((a) => {
             const transactionDate = moment(a.txnDate);
             return {
-                CD: (a.txnAmount >= 0)?"+":"-",
+               // CD: (a.txnAmount >= 0)?"+":"-",
                 Reference: a.txnRef,
                 TransID: a.txnRef,
-                Amount: numeral(Math.abs(a.txnAmount)).format('0,0'),
+                Amount: a.txnAmount,
                 Description: a.txnDesc,
                 TransactionDate: transactionDate.format('DD/MM/YYYY'),
                 TransactionDateUnix: transactionDate.valueOf(),
@@ -114,7 +114,7 @@ const checkTranHistory = async (account, accountNumber, fromTime, toTime, trytim
         //     }
 
         // })
-        return {success: true, transactions: adjustTransactions, raw_transactions: transList};
+        return {success: true, data: adjustTransactions};
     }
     catch (e) {
         if (trytime === 0) return {
@@ -236,7 +236,7 @@ function generateAdditionBody(deviceId = '1ebf8ca5ee692c36') {
             "deviceId": deviceId || "1ebf8ca5ee692c36",
             "otherDeviceId": "8.1.0",
             "application": "MAPP",
-            "applicationVersion": '1.2.0.0'
+            "applicationVersion": '1.3.0.1'
         }
     }
 };
@@ -306,7 +306,7 @@ const login = async (username, password) => {
             }
         }
 
-        await TechcombankModel.findOneAndUpdate({username}, {$set: {username, password: "", cookies, lastLogined: moment().valueOf()}}, {upsert: true})
+        await TechcombankModel.findOneAndUpdate({username}, {$set: {username, password: password, cookies, lastLogined: moment().valueOf()}}, {upsert: true})
 
         const customerId = _.get(firstHeader, 'data.customer.id', 0);
 
